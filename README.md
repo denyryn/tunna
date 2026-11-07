@@ -1,5 +1,12 @@
 # tunna
 
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/logo-dark.png">
+    <img alt="tunna — a one-line tuna, tunneling your ports" src="assets/logo-light.png" width="240">
+  </picture>
+</p>
+
 One small Rust binary that exposes services running on your machine through a
 Cloudflare tunnel. It carries out two jobs at once:
 
