@@ -1,0 +1,18 @@
+[Unit]
+Description=Tunnel route manager + reverse proxy (replaces Caddy + Python manager)
+After=network.target
+
+[Service]
+WorkingDirectory=/home/denyryn/Infra/cloudflare-tunnel
+ExecStart=/home/denyryn/Infra/cloudflare-tunnel/tunna/target/release/tunna
+# values sourced from ../.env; token intentionally NOT passed here
+Environment=BASE_DOMAIN=sikupi.web.id
+Environment=LISTEN_PORT=8088
+Environment=MANAGER_BIND=127.0.0.1
+Environment=MANAGER_PORT=30100
+Environment=DATA_DIR=./data
+Restart=on-failure
+RestartSec=2
+
+[Install]
+WantedBy=multi-user.target
