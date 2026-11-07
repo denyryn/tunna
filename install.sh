@@ -5,6 +5,7 @@
 #   curl -fsSL https://raw.githubusercontent.com/denyryn/tunna/main/install.sh | sudo bash
 #   curl -fsSL ... | sudo bash -s -- 0.1.0          # pinned version
 #   curl -fsSL ... | sudo TUNNA_BIN_DIR=/opt/tunna/bin bash -s --   # custom paths
+#   curl -fsSL ... | sudo TUNNA_SKIP_TRAY=1 bash -s --   # server only, no tray app
 #
 # Layout (all overridable):
 #   binary            -> $TUNNA_BIN_DIR               (default /usr/local/bin)
@@ -17,7 +18,9 @@ TUNNA_BIN_DIR=${TUNNA_BIN_DIR:-/usr/local/bin}
 TUNNA_UNIT_DIR=${TUNNA_UNIT_DIR:-/etc/systemd/system}
 TUNNA_STATE_DIR=${TUNNA_STATE_DIR:-/var/lib/tunna}
 TUNNA_ENV=${TUNNA_ENV:-/etc/tunna/tunna.env}
+TUNNA_AUTOSTART_DIR=${TUNNA_AUTOSTART_DIR:-/etc/xdg/autostart}
 TUNNA_VERSION=${1:-latest}
+TUNNA_SKIP_TRAY=${TUNNA_SKIP_TRAY:-}
 
 case "$(id -u)" in
   0) ;;
@@ -46,6 +49,41 @@ cd dist
 echo "checksum ok"
 
 install -Dm755 tunna "$TUNNA_BIN_DIR/tunna"
+
+# ---- tray app (desktop companion, skipped with TUNNA_SKIP_TRAY=1) --------
+
+install_tray() {
+  echo "installing tunna-tray (tray app for the desktop)"
+  if [ ! -e tunna-tray-x86_64-linux.tar.gz ]; then
+    echo "tunna-tray tarball is missing from the release, skipping" >&2
+    return 0
+  fi
+  tar -xzf tunna-tray-x86_64-linux.tar.gz
+  [ "$(cut -d' ' -f1 dist/tunna-tray.sha256)" = "$(sha256sum dist/tunna-tray | cut -d' ' -f1)" ] ||
+    { echo "tray checksum mismatch, aborting" >&2; exit 1; }
+  install -Dm755 dist/tunna-tray "$TUNNA_BIN_DIR/tunna-tray"
+  # autostart on desktop login (system-wide, honors XDG autostart)
+  mkdir -p "$TUNNA_AUTOSTART_DIR"
+  cat > "$TUNNA_AUTOSTART_DIR/tunna-tray.desktop" <<DESKTOP
+[Desktop Entry]
+Type=Application
+Name=tunna tray
+Exec=$TUNNA_BIN_DIR/tunna-tray
+Terminal=false
+X-GNOME-Autostart-enabled=true
+DESKTOP
+  echo "tray app installed, autostart on login"
+}
+
+if [ -n "$TUNNA_SKIP_TRAY" ]; then
+  echo "skipping tunna-tray (TUNNA_SKIP_TRAY=1)"
+else
+  # fetch the tray tarball from the same release, tolerate an absent artifact
+  curl -fsSL -o tunna-tray-x86_64-linux.tar.gz \
+    "https://github.com/denyryn/tunna/releases/download/$TUNNA_VERSION/tunna-tray-x86_64-linux.tar.gz" \
+    || rm -f tunna-tray-x86_64-linux.tar.gz
+  install_tray
+fi
 
 # ---- helper binaries ----------------------------------------------------
 

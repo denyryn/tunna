@@ -58,8 +58,9 @@ port you will ever expose; tunna's proxy does the per-hostname routing.
 ## 2. Install tunna
 
 One line, as root (downloads the latest release, checks its checksum, puts
-the binary in `/usr/local/bin`, grabs `cloudflared` if it is missing, writes
-both systemd units, and creates env at `/etc/tunna/tunna.env`):
+both binaries in `/usr/local/bin`, grabs `cloudflared` if it is missing, writes
+both systemd units, ends with the tray app on desktop autostart, and creates
+env at `/etc/tunna/tunna.env`):
 
 ```sh
 curl -fsSL https://raw.githubusercontent.com/denyryn/tunna/main/install.sh | sudo bash
@@ -73,6 +74,17 @@ Prefer doing it yourself, or want the files somewhere else? Override paths
 ```sh
 cargo install --git https://github.com/denyryn/tunna
 ```
+
+The tray is its own crate and binary:
+
+```sh
+git clone https://github.com/denyryn/tunna && cd tunna/tray
+cargo build --release   # target/release/tunna-tray
+```
+
+It needs the usual webview runtime (`webkit2gtk-4.1`, `libappindicator`): on
+Fedora `sudo dnf install webkit2gtk4.1 libappindicator-gtk3`, on Debian/Ubuntu
+`libwebkit2gtk-4.1-0 libayatana-appindicator3-1`.
 
 and follow [5. Run it as a service](#5-run-it-as-a-service).
 

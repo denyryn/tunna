@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="theme-color" content="#070b0e">
+  <meta name="description" content="tunna popup: expose local ports through your Cloudflare tunnel and manage the hostname routes.">
+  <title>tunna</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23070b0e'/%3E%3Cpath d='M7 24V16a9 9 0 0 1 18 0v8' fill='none' stroke='%23e9b872' stroke-width='2.3' stroke-linecap='round'/%3E%3Cpath d='M4.5 27.5h23' stroke='%23e9b872' stroke-opacity='.45' stroke-width='1.5' stroke-linecap='round'/%3E%3Cpath d='M13 23v-4M16 23v-7M19 23v-2.6' stroke='%234ed6a1' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="styles.css">
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <div class="app">
+    <header class="top">
+      <div class="brand">
+        <img class="mark" src="brand.svg" alt="" width="22" height="22">
+        <h1 class="wordmark">tunna</h1>
+        <span class="domain" id="base-domain">checking</span>
+      </div>
+      <div class="status" id="status" data-state="pending" role="status" title="Manager API reachability">
+        <span class="dot" aria-hidden="true"></span>
+        <span class="status-text" id="status-text">checking</span>
+      </div>
+    </header>
+
+    <div class="toast" id="toast" role="alert" aria-live="assertive" hidden></div>
+
+    <main class="main">
+      <div class="list-head">
+        <h2>Routes</h2>
+        <span class="count" id="count"></span>
+      </div>
+      <ul class="scroll" id="list" aria-busy="true" aria-label="Tunnel routes"></ul>
+    </main>
+
+    <form class="composer" id="add-form" aria-label="Expose a port" autocomplete="off" novalidate>
+      <input class="input port" id="port" name="port" inputmode="numeric" maxlength="5"
+             placeholder="port" aria-label="Local port" required>
+      <input class="input host" id="host" name="host"
+             placeholder="auto: p3000.example.com" aria-label="Hostname, optional"
+             spellcheck="false" autocapitalize="off">
+      <button class="expose" id="expose" type="submit">Expose</button>
+    </form>
+  </div>
+</body>
+</html>
