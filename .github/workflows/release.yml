@@ -65,6 +65,7 @@ jobs:
           tar -czf tunna-tray-x86_64-linux.tar.gz dist/*
 
       - name: Upload
+        working-directory: tray
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
