@@ -168,6 +168,19 @@ curl -X PATCH localhost:8080/api/routes/p3000.example.com -d '{"enabled": false}
 curl -X DELETE localhost:8080/api/routes/p3000.example.com
 ```
 
+Or with the built-in CLI (talks to the running manager over the same API):
+
+```sh
+tunna routes              # list routes
+tunna expose 3000         # expose port 3000 (host defaults to p3000.<base_domain>)
+tunna expose 3000 app.example.com
+tunna off p3000           # disable (short hosts resolve against the base domain)
+tunna on p3000            # re-enable
+tunna remove p3000        # delete
+```
+
+Commands find the manager at `TUNNA_MANAGER` (default `http://127.0.0.1:8080`).
+
 ## Where routes live
 
 `$DATA_DIR/routes.json`. Every change is written here before tunna responds,

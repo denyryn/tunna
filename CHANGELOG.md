@@ -2,6 +2,16 @@
 
 All notable changes to tunna are documented here (Keep a Changelog, semver).
 
+## 0.3.2 - 2026-11-07
+
+### Added
+
+- Built-in CLI: `tunna routes`, `expose <port> [host]`, `remove <host>`,
+  `on <host>`, `off <host>` — same binary, commands talk to the running
+  manager over the API (`TUNNA_MANAGER` env, default
+  `http://127.0.0.1:8080`); short hosts resolve against the base domain.
+  No arguments still starts the server.
+
 ## 0.3.1 - 2026-11-07
 
 ### Fixed
