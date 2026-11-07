@@ -1,57 +1,64 @@
 /* Hallmark · 2026-11-07 · genre: modern-minimal (app screen)
- * theme: locked tokens, brass under a dome · shape: app screen · scope: app
- * redesign: full, compact pass — denser rows, merged header, fewer bands
- * critique: popup read as three stacked banners; now it is one tool surface
+ * theme: analog control panel (by request) · shape: app screen · scope: app
+ * redesign: full — retro panel: charcoal bezel, cream engraved type, amber
+ * signal, phosphor live, all-mono, compact 400x540
+ * critique: previous system read generic dark; now it reads a physical panel
  * waive: 58 skipped by scope: app · 44 skipped: fixed 400x540 webview shell
- * waive 64: .port-chip mono is a tabular figure (port numbers); mono is the material
+ * waive 39b: the 19px "input" is the a11y checkbox overlay inside .switch; visible control is the track
+ * waive 64: .port-chip / .route-host mono is the material (panel numerics)
  * answered 25: .empty p is a two-line caption, 30ch deliberate
  */
 
 :root {
-  --bg: #070b0e;
-  --surface: #0c1418;
-  --surface-2: #111c21;
-  --field: #0f181d;
-  --field-line: #4d6a76;
+  --bg: #141109;
+  --bezels: #0d0b06;
+  --plate: #1c1811;
+  --plate-hi: #2a2419;
+  --field: #100e09;
+  --field-line: #7d735b;
 
-  --line: rgba(158, 197, 185, .12);
-  --line-strong: rgba(158, 197, 185, .22);
-  --accent-line: rgba(233, 184, 114, .28);
-  --btn-hover: rgba(158, 197, 185, .08);
+  --engrave: rgba(228, 212, 176, .11);
+  --engrave-strong: rgba(228, 212, 176, .26);
+  --shift: #010101;
 
-  --text: #e4ede8;
-  --host-ink: #dbe7e1;
-  --muted: #8ea39c;
-  --faint: #748a83;
-  --placeholder: #667b74;
+  --text: #e8dcbe;
+  --host-ink: #f3ecd8;
+  --muted: #a89a78;
+  --faint: #988c6b;
+  --placeholder: #6b6148;
 
-  --accent: #e9b872;
-  --accent-soft: rgba(233, 184, 114, .13);
-  --accent-ink: #231708;
-  --glow-brass: rgba(233, 184, 114, .10);
+  --amber: #f2a83e;
+  --amber-ink: #170f04;
+  --amber-soft: rgba(242, 168, 62, .12);
+  --amber-track: rgba(242, 168, 62, .16);
+  --amber-border: rgba(242, 168, 62, .34);
+  --glow-amber: rgba(242, 168, 62, .09);
 
-  --live: #4ed6a1;
-  --live-soft: rgba(78, 214, 161, .12);
-  --live-line: rgba(78, 214, 161, .45);
-  --live-track: rgba(78, 214, 161, .15);
-  --live-knob-glow: rgba(78, 214, 161, .5);
-  --glow-live: rgba(78, 214, 161, .06);
-  --live-border: rgba(78, 214, 161, .28);
-  --live-ring: rgba(78, 214, 161, .5);
+  --live: #5fd894;
+  --live-soft: rgba(95, 216, 148, .12);
+  --live-track: rgba(95, 216, 148, .15);
+  --live-line: rgba(95, 216, 148, .42);
+  --live-border: rgba(95, 216, 148, .3);
+  --live-ring: rgba(95, 216, 148, .5);
+  --live-knob-glow: rgba(95, 216, 148, .45);
+  --glow-live: rgba(95, 216, 148, .05);
 
-  --danger: #f0736b;
-  --danger-soft: rgba(240, 115, 107, .1);
-  --danger-line: rgba(240, 115, 107, .34);
-  --danger-ink: #ffd9d3;
-  --danger-toast: rgba(32, 16, 15, .92);
+  --danger: #e26b49;
+  --danger-soft: rgba(226, 107, 73, .12);
+  --danger-line: rgba(226, 107, 73, .38);
+  --danger-ink: #ffcdb8;
+  --danger-toast: #2b170f;
 
-  --sk: rgba(158, 197, 185, .09);
-  --shade: rgba(0, 0, 0, .32);
-  --shadow: rgba(0, 0, 0, .5);
+  --shadow: rgba(23, 15, 4, .55);
+  --knob: #d8c9a4;
+  --knob-off: #8d8064;
+  --btn-hover: rgba(228, 212, 176, .07);
+  --sk: rgba(228, 212, 176, .08);
+  --grain: rgba(0, 0, 0, .34);
+  --scroll-thumb: #2e2718;
 
-  --font-ui: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  --font-display: ui-serif, "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Palatino, Georgia, serif;
-  --font-mono: ui-monospace, "SFMono-Regular", "Cascadia Mono", Menlo, Consolas, monospace;
+  --font-mono: ui-monospace, "SFMono-Regular", "Cascadia Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+  --font-ui: var(--font-mono);
 
   --motion: 120ms ease;
 }
@@ -69,23 +76,32 @@ body {
 body {
   background: var(--bg);
   color: var(--text);
-  font-family: var(--font-ui);
+  font-family: var(--font-mono);
   font-size: 12.5px;
   line-height: 1.35;
   -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
 }
 
-/* one ambient glow, tokens only */
+/* bezel: warm inset glow + a scan of grain, tokens only */
 body::before {
   content: "";
   position: fixed;
   inset: 0;
   z-index: 0;
   background:
-    radial-gradient(120% 60% at 50% -20%, var(--glow-brass), transparent 55%),
-    radial-gradient(75% 50% at 108% 110%, var(--glow-live), transparent 65%),
-    radial-gradient(120% 100% at 50% 55%, transparent 60%, var(--shade) 100%);
+    radial-gradient(120% 55% at 50% -18%, var(--glow-amber), transparent 55%),
+    radial-gradient(70% 45% at 106% 108%, var(--glow-live), transparent 62%),
+    radial-gradient(120% 100% at 50% 55%, transparent 58%, var(--grain) 100%);
+  pointer-events: none;
+}
+
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 2;
+  opacity: .05;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='110' height='110'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='110' height='110' filter='url(%23n)' opacity='.45'/%3E%3C/svg%3E");
   pointer-events: none;
 }
 
@@ -98,7 +114,7 @@ body::before {
   overflow: clip;
 }
 
-/* ---------- header: one 42px band ---------- */
+/* ---------- header: engraved plate ---------- */
 
 .top {
   flex: none;
@@ -106,7 +122,9 @@ body::before {
   align-items: center;
   gap: 8px;
   padding: 8px 12px;
-  border-bottom: 1px solid var(--line);
+  border-bottom: 1px solid var(--engrave);
+  background: var(--plate);
+  box-shadow: inset 0 -1px 0 var(--shift);
 }
 
 .brand {
@@ -119,23 +137,24 @@ body::before {
 
 .mark {
   flex: none;
-  width: 22px;
-  height: 22px;
+  width: 20px;
+  height: 20px;
 }
 
 .wordmark {
   margin: 0;
-  font-family: var(--font-display);
-  font-size: 16px;
+  font-family: var(--font-mono);
+  font-size: 14px;
   font-weight: 600;
   line-height: 1;
-  color: var(--text);
+  letter-spacing: 0;
+  color: var(--host-ink);
   text-wrap: balance;
 }
 
 .wordmark::after {
   content: ".";
-  color: var(--accent);
+  color: var(--amber);
 }
 
 .domain {
@@ -146,7 +165,6 @@ body::before {
   font-family: var(--font-mono);
   font-size: 11px;
   color: var(--faint);
-  padding-top: 2px;
 }
 
 .status {
@@ -154,10 +172,11 @@ body::before {
   display: flex;
   align-items: center;
   gap: 4px;
-  padding: 4px 12px 4px 8px;
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  background: var(--surface);
+  padding: 4px 8px;
+  border: 1px solid var(--engrave);
+  border-radius: 2px;
+  background: var(--bg);
+  box-shadow: inset 0 1px 0 var(--shift);
   transition: border-color var(--motion), background-color var(--motion);
 }
 
@@ -172,45 +191,43 @@ body::before {
   flex: none;
   width: 6px;
   height: 6px;
-  border-radius: 50%;
+  border-radius: 1px;
   background: var(--faint);
   transition: background-color var(--motion), box-shadow var(--motion);
 }
 
 .status[data-state="online"] {
   border-color: var(--live-border);
-  background: var(--live-soft);
 }
 
 .status[data-state="online"] .dot {
   background: var(--live);
-  box-shadow: 0 0 0 3px var(--live-soft);
+  box-shadow: 0 0 0 2px var(--live-soft), 0 0 8px var(--live);
 }
 
 .status[data-state="offline"] {
-  border-color: var(--accent-line);
+  border-color: var(--amber-border);
 }
 
 .status[data-state="offline"] .dot {
-  background: var(--accent);
-  box-shadow: 0 0 0 3px var(--accent-soft);
+  background: var(--amber);
+  box-shadow: 0 0 0 2px var(--amber-soft);
 }
 
 .status[data-state="offline"] .status-text {
-  color: var(--accent);
+  color: var(--amber);
 }
 
 @keyframes ping {
-  0%   { transform: scale(.6); opacity: .9; }
+  0%   { transform: scale(.6); opacity: .85; }
   70%,
-  100% { transform: scale(1.9); opacity: 0; }
+  100% { transform: scale(2); opacity: 0; }
 }
 
 .status[data-state="online"] .dot::after {
   content: "";
   position: absolute;
   inset: -3px;
-  border-radius: 50%;
   border: 1px solid var(--live-ring);
   animation: ping 2.4s cubic-bezier(0, 0, .2, 1) infinite;
 }
@@ -225,8 +242,6 @@ body::before {
   right: 12px;
   padding: 8px 12px;
   border: 1px solid var(--danger-line);
-  border-left: 2px solid var(--danger);
-  border-radius: 8px;
   background: var(--danger-toast);
   color: var(--danger-ink);
   font-size: 12px;
@@ -241,7 +256,7 @@ body::before {
 
 .toast[hidden] { display: none; }
 
-/* ---------- route list ---------- */
+/* ---------- route list: engraved rows ---------- */
 
 .main {
   display: flex;
@@ -260,11 +275,11 @@ body::before {
 
 .list-head h2 {
   margin: 0;
-  text-wrap: balance;
-  font-family: var(--font-ui);
+  font-family: var(--font-mono);
   font-size: 11px;
   font-weight: 500;
   color: var(--faint);
+  text-wrap: balance;
 }
 
 .count {
@@ -283,13 +298,13 @@ body::before {
   overscroll-behavior: contain;
   list-style: none;
   scrollbar-width: thin;
-  scrollbar-color: var(--surface-2) transparent;
+  scrollbar-color: var(--scroll-thumb) transparent;
 }
 
 .scroll::-webkit-scrollbar { width: 8px; }
 .scroll::-webkit-scrollbar-track { background: transparent; }
 .scroll::-webkit-scrollbar-thumb {
-  background: var(--surface-2);
+  background: var(--scroll-thumb);
   border: 2px solid transparent;
   border-radius: 999px;
   background-clip: padding-box;
@@ -306,12 +321,20 @@ body::before {
   align-items: center;
   gap: 4px;
   padding: 4px 4px 4px 8px;
-  border-radius: 8px;
-  transition: background-color var(--motion);
+  border: 1px solid var(--engrave);
+  border-radius: 3px;
+  background: var(--plate);
+  margin-bottom: 2px;
+  transition: background-color var(--motion), border-color var(--motion);
 }
 
 .route:hover {
-  background: var(--btn-hover);
+  border-color: var(--engrave-strong);
+}
+
+.route.is-off {
+  border-style: dashed;
+  opacity: .55;
 }
 
 .route-main {
@@ -320,11 +343,6 @@ body::before {
   align-items: center;
   gap: 8px;
   min-width: 0;
-  transition: opacity var(--motion);
-}
-
-.route.is-off .route-main {
-  opacity: .5;
 }
 
 .route-host {
@@ -334,20 +352,20 @@ body::before {
   white-space: nowrap;
   font-family: var(--font-mono);
   font-size: 12px;
-  letter-spacing: -.01em;
   color: var(--host-ink);
 }
 
 .port-chip {
   flex: none;
   padding: 1px 4px;
-  border: 1px solid var(--line);
-  border-radius: 4px;
-  background: var(--surface-2);
+  border: 1px solid var(--engrave);
+  border-radius: 2px;
+  background: var(--bg);
   font-family: var(--font-mono);
   font-size: 10.5px;
   font-variant-numeric: tabular-nums;
   color: var(--muted);
+  box-shadow: inset 0 1px 0 var(--shift);
 }
 
 .route-actions {
@@ -364,7 +382,7 @@ body::before {
   height: 26px;
   padding: 0;
   border: 0;
-  border-radius: 6px;
+  border-radius: 3px;
   background: transparent;
   color: var(--faint);
   cursor: pointer;
@@ -382,15 +400,15 @@ body::before {
 }
 
 .icon-btn:hover {
-  color: var(--text);
+  color: var(--host-ink);
   background: var(--btn-hover);
 }
 
-.icon-btn.copy:hover { color: var(--accent); }
+.icon-btn.copy:hover { color: var(--amber); }
 .icon-btn.delete:hover { color: var(--danger); background: var(--danger-soft); }
 .icon-btn:disabled {
   color: var(--faint);
-  background: var(--btn-hover);
+  background: var(--sk);
   cursor: not-allowed;
 }
 
@@ -399,7 +417,7 @@ body::before {
 .icon-btn.copied .ic-copy { display: none; }
 .icon-btn.copied .ic-check { display: block; }
 
-/* switch */
+/* switch: physical toggle */
 
 .switch {
   position: relative;
@@ -424,9 +442,10 @@ body::before {
 .switch .track {
   width: 100%;
   height: 100%;
-  border: 1px solid var(--line-strong);
-  border-radius: 999px;
-  background: var(--sk);
+  border: 1px solid var(--engrave-strong);
+  border-radius: 2px;
+  background: var(--field);
+  box-shadow: inset 0 1px 2px var(--shift);
   transition: background-color var(--motion), border-color var(--motion);
 }
 
@@ -434,11 +453,11 @@ body::before {
   position: absolute;
   top: 3px;
   left: 3px;
-  width: 11px;
-  height: 11px;
-  border-radius: 50%;
-  background: var(--muted);
-  transition: transform var(--motion), background-color var(--motion), box-shadow var(--motion);
+  width: 9px;
+  height: 9px;
+  border-radius: 1px;
+  background: var(--knob-off);
+  transition: transform var(--motion), background-color var(--motion);
 }
 
 .switch input:checked ~ .track {
@@ -449,11 +468,10 @@ body::before {
 .switch input:checked ~ .knob {
   transform: translateX(13px);
   background: var(--live);
-  box-shadow: 0 0 6px var(--live-knob-glow);
 }
 
 .switch input:focus-visible ~ .track {
-  outline: 2px solid var(--accent);
+  outline: 2px solid var(--amber);
   outline-offset: 2px;
 }
 
@@ -466,7 +484,7 @@ body::before {
   flex-direction: column;
   align-items: center;
   margin: auto;
-  padding: 8px 24px 24px;
+  padding: 8px 24px 20px;
   text-align: center;
 }
 
@@ -475,15 +493,15 @@ body::before {
   height: 44px;
   margin-bottom: 8px;
   color: var(--faint);
-  opacity: .75;
+  opacity: .8;
 }
 
 .empty h3 {
   margin: 0 0 4px;
-  font-family: var(--font-display);
-  font-size: 15px;
-  font-weight: 500;
-  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--host-ink);
   text-wrap: balance;
 }
 
@@ -491,11 +509,11 @@ body::before {
   max-width: 30ch;
   margin: 0;
   font-size: 12px;
-  line-height: 1.5;
+  line-height: 1.4;
   color: var(--muted);
 }
 
-.empty.offline h3 { color: var(--accent); }
+.empty.offline h3 { color: var(--amber); }
 
 .ghost-btn {
   display: inline-grid;
@@ -503,17 +521,19 @@ body::before {
   height: 32px;
   margin-top: 12px;
   padding: 0 12px;
-  border: 1px solid var(--accent-line);
-  border-radius: 6px;
-  background: transparent;
-  color: var(--accent);
-  font-size: 11px;
+  border: 1px solid var(--engrave-strong);
+  border-radius: 3px;
+  background: var(--plate);
+  color: var(--amber);
+  font-family: var(--font-mono);
+  font-size: 12px;
   cursor: pointer;
   transition: background-color var(--motion), border-color var(--motion);
 }
 
 .ghost-btn:hover {
-  background: var(--accent-soft);
+  border-color: var(--amber);
+  background: var(--amber-soft);
 }
 
 .skeleton-row {
@@ -524,7 +544,7 @@ body::before {
 }
 
 .sk {
-  border-radius: 4px;
+  border-radius: 2px;
   background: var(--sk);
 }
 
@@ -539,19 +559,20 @@ body::before {
 .sk-ctl {
   width: 15px;
   height: 15px;
-  border-radius: 50%;
+  border-radius: 2px;
 }
 
-/* ---------- composer ---------- */
+/* ---------- composer: panel row ---------- */
 
 .composer {
   flex: none;
   display: flex;
-  gap: 8px;
+  gap: 4px;
   align-items: center;
-  padding: 8px 12px;
-  border-top: 1px solid var(--line);
-  background: var(--surface);
+  padding: 8px;
+  border-top: 1px solid var(--engrave);
+  background: var(--plate);
+  box-shadow: inset 0 1px 0 var(--shift);
 }
 
 .input {
@@ -559,11 +580,12 @@ body::before {
   height: 34px;
   padding: 0 8px;
   border: 1px solid var(--field-line);
-  border-radius: 7px;
+  border-radius: 3px;
   background: var(--field);
-  color: var(--text);
+  color: var(--host-ink);
   font-family: var(--font-mono);
   font-size: 12px;
+  box-shadow: inset 0 1px 2px var(--shift);
   transition: border-color var(--motion), box-shadow var(--motion);
 }
 
@@ -576,8 +598,8 @@ body::before {
 
 .input:focus {
   outline: none;
-  border-color: var(--accent);
-  box-shadow: 0 0 0 2px var(--accent-soft);
+  border-color: var(--amber);
+  box-shadow: 0 0 0 2px var(--amber-soft), inset 0 1px 2px var(--shift);
 }
 
 .port {
@@ -592,39 +614,44 @@ body::before {
   flex: none;
   height: 34px;
   padding: 0 12px;
-  border: 1px solid var(--accent);
-  border-radius: 7px;
-  background: var(--accent);
-  color: var(--accent-ink);
-  font-family: var(--font-ui);
+  border: 1px solid var(--amber);
+  border-radius: 3px;
+  background: var(--amber);
+  box-shadow: 0 2px 0 var(--shadow);
+  color: var(--amber-ink);
+  font-family: var(--font-mono);
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
-  transition: filter var(--motion), transform var(--motion);
+  transition: filter var(--motion), transform var(--motion), box-shadow var(--motion);
 }
 
-.expose:hover { filter: brightness(1.06); }
-.expose:active { transform: translateY(1px); }
+.expose:hover { filter: brightness(1.07); background: var(--amber); }
+.expose:active {
+  transform: translateY(2px);
+  box-shadow: 0 0 0 var(--shadow);
+}
 .expose:disabled {
-  background: var(--surface-2);
-  border-color: var(--line);
+  background: var(--plate-hi);
+  border-color: var(--engrave);
   color: var(--muted);
   cursor: not-allowed;
   filter: none;
+  box-shadow: none;
 }
 
 /* ---------- focus ---------- */
 
 :where(button, input, [tabindex]):focus-visible {
-  outline: 2px solid var(--accent);
+  outline: 2px solid var(--amber);
   outline-offset: 2px;
 }
 
 .input:focus-visible { outline: none; }
 
 ::selection {
-  background: var(--accent-soft);
-  color: var(--accent-ink);
+  background: var(--amber-soft);
+  color: var(--host-ink);
 }
 
 @media (prefers-reduced-motion: reduce) {

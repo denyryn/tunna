@@ -2,6 +2,16 @@
 
 All notable changes to tunna are documented here (Keep a Changelog, semver).
 
+## 0.3.0 - 2026-11-07
+
+### Changed
+
+- The web manager UI and the tray popup are fully remade as an analog
+  retro control panel: warm charcoal bezel, cream engraved mono type,
+  amber signal with a phosphor-green live state, stamped port chips and
+  physical toggles. All-mono typography on both surfaces; identical
+  markup wiring, API and `routes.json` schema, no migration.
+
 ## 0.2.0 - 2026-11-07
 
 ### Added

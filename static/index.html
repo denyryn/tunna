@@ -4,72 +4,79 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="dark">
-<meta name="theme-color" content="#070b0e">
+<meta name="theme-color" content="#141109">
 <meta name="description" content="tunna manager: expose local ports through your Cloudflare tunnel and manage the hostname routes.">
 <title>tunna. routes</title>
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23070b0e'/%3E%3Cpath d='M7 24V16a9 9 0 0 1 18 0v8' fill='none' stroke='%23e9b872' stroke-width='2.3' stroke-linecap='round'/%3E%3Cpath d='M4.5 27.5h23' stroke='%23e9b872' stroke-opacity='.45' stroke-width='1.5' stroke-linecap='round'/%3E%3Cpath d='M13 23v-4M16 23v-7M19 23v-2.6' stroke='%234ed6a1' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E">
-<!-- Hallmark · 2026-11-07 · genre: modern-minimal (inferred, app screen)
-     aligned to tunna-tray popup: same tokens, faces and components
-     floor: 0 FAIL · fixed on this file: 19, 34, 39a, 40, 48 · waives: app-scope gates (built: the project · redesign: align)
--->
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M7 23V16a9 9 0 0 1 18 0v7' fill='none' stroke='%23e8dcbe' stroke-width='2.4' stroke-linecap='round'/%3E%3Cpath d='M4 27h24' stroke='%23a89a78' stroke-opacity='.5' stroke-width='1.6' stroke-linecap='round'/%3E%3Ccircle cx='16' cy='15' r='2' fill='%23f2a83e'/%3E%3Cpath d='M10 23v-4M14 23v-6M18 23v-4.5' stroke='%235fd894' stroke-width='1.7'/%3E%3C/svg%3E">
 <style>
 /* Hallmark · 2026-11-07 · genre: modern-minimal (app screen)
- * theme: locked tokens, brass under a dome · scope: app
- * aligned to tunna-tray popup (same tokens, faces, components) · built: the project · redesign: align
+ * theme: analog control panel (by request) · scope: app
+ * aligned 1:1 to tunna-tray popup styles.css (same tokens, faces, components)
+ * built: the project · redesign: align
  * waive 39b: the 19px "input" is the a11y checkbox overlay inside .switch; visible control is the track
- * waive 64: .port-chip mono is a tabular figure (port numbers); mono is the material
+ * waive 64: .field span / .port-chip mono is the material (panel engraving + port numerics)
  */
 :root {
-  --bg: #070b0e;
-  --surface: #0c1418;
-  --surface-2: #111c21;
-  --field: #0f181d;
-  --field-line: #4d6a76;
+  --bg: #141109;
+  --bz: #0d0b06;
+  --bezels: #0d0b06;
+  --plate: #1c1811;
+  --plate-hi: #2a2419;
+  --field: #100e09;
+  --field-line: #7d735b;
 
-  --line: rgba(158, 197, 185, .12);
-  --line-strong: rgba(158, 197, 185, .22);
-  --accent-line: rgba(233, 184, 114, .28);
-  --btn-hover: rgba(158, 197, 185, .08);
+  --engrave: rgba(228, 212, 176, .11);
+  --engrave-strong: rgba(228, 212, 176, .26);
+  --shift: #010101;
+  --shadow: rgba(23, 15, 4, .55);
 
-  --text: #e4ede8;
-  --host-ink: #dbe7e1;
-  --muted: #8ea39c;
-  --faint: #748a83;
-  --placeholder: #667b74;
+  --text: #e8dcbe;
+  --host-ink: #f3ecd8;
+  --muted: #a89a78;
+  --faint: #988c6b;
+  --placeholder: #6b6148;
 
-  --accent: #e9b872;
-  --accent-soft: rgba(233, 184, 114, .13);
-  --accent-ink: #231708;
-  --glow-brass: rgba(233, 184, 114, .10);
+  --amber: #f2a83e;
+  --amber-ink: #170f04;
+  --amber-soft: rgba(242, 168, 62, .12);
+  --amber-track: rgba(242, 168, 62, .16);
+  --amber-border: rgba(242, 168, 62, .34);
+  --glow-amber: rgba(242, 168, 62, .09);
 
-  --live: #4ed6a1;
-  --live-soft: rgba(78, 214, 161, .12);
-  --live-line: rgba(78, 214, 161, .45);
-  --live-track: rgba(78, 214, 161, .15);
+  --live: #5fd894;
+  --live-soft: rgba(95, 216, 148, .12);
+  --live-track: rgba(95, 216, 148, .15);
+  --live-line: rgba(95, 216, 148, .42);
+  --live-border: rgba(95, 216, 148, .3);
+  --live-ring: rgba(95, 216, 148, .5);
+  --glow-live: rgba(95, 216, 148, .05);
 
-  --danger: #f0736b;
-  --danger-soft: rgba(240, 115, 107, .1);
-  --danger-line: rgba(240, 115, 107, .34);
-  --danger-ink: #ffd9d3;
-  --danger-toast: rgba(32, 16, 15, .92);
+  --danger: #e26b49;
+  --danger-soft: rgba(226, 107, 73, .12);
+  --danger-line: rgba(226, 107, 73, .38);
+  --danger-ink: #ffcdb8;
+  --danger-toast: #2b170f;
 
-  --glow-live: rgba(78, 214, 161, .06);
-  --shade: rgba(0, 0, 0, .32);
-  --sk: rgba(158, 197, 185, .09);
+  --knob: #d8c9a4;
+  --knob-off: #8d8064;
+  --btn-hover: rgba(228, 212, 176, .07);
+  --sk: rgba(228, 212, 176, .08);
+  --grain: rgba(0, 0, 0, .34);
+  --scroll-thumb: #2e2718;
 
-  --font-ui: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   --font-display: ui-serif, "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Palatino, Georgia, serif;
-  --font-mono: ui-monospace, "SFMono-Regular", "Cascadia Mono", Menlo, Consolas, monospace;
+  --font-mono: ui-monospace, "SFMono-Regular", "Cascadia Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+  --font-ui: var(--font-mono);
 
   --motion: 120ms ease;
 }
 * { box-sizing: border-box; }
-html, body { margin: 0; overflow-x: clip; }
+html, body { margin: 0; overflow: clip; }
 body {
   min-height: 100vh;
   background: var(--bg);
   color: var(--text);
-  font-family: var(--font-ui);
+  font-family: var(--font-mono);
   font-size: 13px;
   line-height: 1.4;
   -webkit-font-smoothing: antialiased;
@@ -80,11 +87,22 @@ body::before {
   inset: 0;
   pointer-events: none;
   background:
-    radial-gradient(90% 45% at 50% -15%, var(--glow-brass), transparent 55%),
-    radial-gradient(60% 40% at 110% 110%, var(--glow-live), transparent 65%);
+    radial-gradient(120% 55% at 50% -18%, var(--glow-amber), transparent 55%),
+    radial-gradient(70% 45% at 106% 108%, var(--glow-live), transparent 62%),
+    radial-gradient(120% 100% at 50% 55%, transparent 58%, var(--grain) 100%);
+}
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  opacity: .05;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='110' height='110'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='110' height='110' filter='url(%23n)' opacity='.45'/%3E%3C/svg%3E");
+  pointer-events: none;
 }
 main.shell {
   position: relative;
+  z-index: 2;
   max-width: 680px;
   margin: 0 auto;
   padding: 40px 20px 64px;
@@ -98,21 +116,21 @@ main.shell {
 .mark { flex: none; width: 24px; height: 24px; }
 .wordmark {
   margin: 0;
-  font-family: var(--font-display);
-  font-size: 22px;
-  font-weight: 600;
+  font-family: var(--font-mono);
+  font-size: 16px;
+  font-weight: 700;
   line-height: 1;
-  color: var(--text);
+  color: var(--host-ink);
   text-wrap: balance;
 }
-.wordmark::after { content: "."; color: var(--accent); }
+.wordmark::after { content: "."; color: var(--amber); }
 .domain {
   overflow: hidden;
   min-width: 0;
   text-overflow: ellipsis;
   white-space: nowrap;
   font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: 12px;
   color: var(--faint);
 }
 .sub {
@@ -124,20 +142,20 @@ main.shell {
 .sub code { color: var(--host-ink); font-family: var(--font-mono); font-size: 12px; }
 .toast {
   border: 1px solid var(--danger-line);
-  border-left: 2px solid var(--danger);
-  border-radius: 8px;
+  border-radius: 3px;
   background: var(--danger-toast);
   color: var(--danger-ink);
   font-size: 12px;
-  padding: 8px 12px;
+  padding: 8px 8px;
   margin-bottom: 12px;
 }
 .toast[hidden] { display: none; }
 .panel {
   color: var(--text);
-  border: 1px solid var(--line);
-  border-radius: 10px;
-  background: var(--surface);
+  border: 1px solid var(--engrave);
+  border-radius: 3px;
+  background: var(--plate);
+  box-shadow: inset 0 1px 0 var(--shift);
 }
 form#add {
   display: flex;
@@ -155,70 +173,78 @@ label.field {
 }
 label.field > span {
   font-size: 11px;
+  font-family: var(--font-mono);
   color: var(--faint);
 }
 input {
   height: 34px;
   padding: 0 8px;
   border: 1px solid var(--field-line);
-  border-radius: 7px;
+  border-radius: 3px;
   background: var(--field);
-  color: var(--text);
+  color: var(--host-ink);
   font-family: var(--font-mono);
   font-size: 12px;
+  box-shadow: inset 0 1px 2px var(--shift);
   transition: border-color var(--motion), box-shadow var(--motion);
 }
 input::placeholder { color: var(--placeholder); opacity: 1; }
 input:hover { border-color: var(--muted); }
 input:focus {
   outline: none;
-  border-color: var(--accent);
-  box-shadow: 0 0 0 2px var(--accent-soft);
+  border-color: var(--amber);
+  box-shadow: 0 0 0 2px var(--amber-soft), inset 0 1px 2px var(--shift);
 }
-#port { width: 96px; }
+#port { width: 96px; font-variant-numeric: tabular-nums; }
 #host { flex: 1; min-width: 180px; }
 button {
   height: 34px;
   padding: 0 12px;
-  border: 1px solid var(--line-strong);
-  border-radius: 7px;
-  background: var(--surface-2);
+  border: 1px solid var(--engrave-strong);
+  border-radius: 3px;
+  background: var(--plate-hi);
   color: var(--text);
-  font-family: var(--font-ui);
-  font-size: 12.5px;
+  font-family: var(--font-mono);
+  font-size: 12px;
   cursor: pointer;
-  transition: background-color var(--motion), border-color var(--motion), color var(--motion), filter var(--motion);
+  transition: background-color var(--motion), border-color var(--motion), color var(--motion), filter var(--motion), transform var(--motion), box-shadow var(--motion);
 }
 button:hover { border-color: var(--muted); background: var(--btn-hover); }
 button.primary {
-  background: var(--accent);
-  border-color: var(--accent);
-  color: var(--accent-ink);
-  font-weight: 600;
+  background: var(--amber);
+  border-color: var(--amber);
+  color: var(--amber-ink);
+  font-weight: 700;
+  box-shadow: 0 2px 0 var(--shadow);
 }
-button.primary:hover { filter: brightness(1.06); background: var(--accent); }
-button.primary:active { transform: translateY(1px); }
+button.primary:hover { filter: brightness(1.07); background: var(--amber); }
+button.primary:active { transform: translateY(2px); box-shadow: 0 0 0 var(--shadow); }
 button.ghost { background: transparent; }
 button.danger { background: transparent; border-color: transparent; color: var(--faint); }
 button.danger:hover { color: var(--danger); background: var(--danger-soft); border-color: var(--danger-line); }
 button:disabled {
-  background: var(--surface-2);
-  border-color: var(--line);
+  background: var(--plate-hi);
+  border-color: var(--engrave);
   color: var(--muted);
   cursor: not-allowed;
   filter: none;
+  box-shadow: none;
 }
-ul#list { display: flex; flex-direction: column; gap: 4px; padding: 8px; margin: 0; }
+ul#list { display: flex; flex-direction: column; gap: 2px; padding: 8px 4px; margin: 0; padding-bottom: 4px; }
+ul#list:empty { padding: 0; border: none; background: none; box-shadow: none; }
 li.route {
   display: flex;
   align-items: center;
   gap: 8px;
-  border-radius: 8px;
   padding: 4px 4px 4px 8px;
-  transition: background-color var(--motion);
+  border: 1px solid var(--engrave);
+  border-radius: 3px;
+  background: var(--plate);
+  box-shadow: inset 0 1px 0 var(--shift);
+  transition: background-color var(--motion), border-color var(--motion);
 }
-li.route:hover { background: var(--btn-hover); }
-li.route.off .route-main { opacity: .5; }
+li.route:hover { border-color: var(--engrave-strong); }
+li.route.off { border-style: dashed; opacity: .55; }
 .route-main { display: flex; flex: 1; align-items: center; gap: 8px; min-width: 0; }
 .host-line { display: flex; align-items: center; gap: 8px; min-width: 0; }
 .host-line .host {
@@ -232,13 +258,14 @@ li.route.off .route-main { opacity: .5; }
 .port-chip {
   flex: none;
   padding: 1px 4px;
-  border: 1px solid var(--line);
-  border-radius: 4px;
-  background: var(--surface-2);
+  border: 1px solid var(--engrave);
+  border-radius: 2px;
+  background: var(--bg);
   font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: 10.5px;
   font-variant-numeric: tabular-nums;
   color: var(--muted);
+  box-shadow: inset 0 1px 0 var(--shift);
 }
 .target { color: var(--faint); font-size: 11px; font-variant-numeric: tabular-nums; }
 .switch { position: relative; display: inline-flex; width: 30px; height: 17px; flex: none; margin: 0 4px; }
@@ -254,20 +281,21 @@ li.route.off .route-main { opacity: .5; }
 }
 .switch .track {
   position: absolute; inset: 0;
-  border: 1px solid var(--line-strong);
-  border-radius: 999px;
-  background: var(--sk);
+  border: 1px solid var(--engrave-strong);
+  border-radius: 2px;
+  background: var(--field);
+  box-shadow: inset 0 1px 2px var(--shift);
   transition: background-color var(--motion), border-color var(--motion);
 }
 .switch .track::after {
   content: "";
   position: absolute;
-  top: 2px;
-  left: 2px;
-  width: 11px;
-  height: 11px;
-  border-radius: 50%;
-  background: var(--muted);
+  top: 3px;
+  left: 3px;
+  width: 9px;
+  height: 9px;
+  border-radius: 1px;
+  background: var(--knob-off);
   transition: transform var(--motion), background-color var(--motion);
 }
 .switch input:checked + .track {
@@ -279,24 +307,27 @@ li.route.off .route-main { opacity: .5; }
   background: var(--live);
 }
 .switch input:focus-visible + .track {
-  outline: 2px solid var(--accent);
+  outline: 2px solid var(--amber);
   outline-offset: 2px;
 }
 .empty {
   padding: 40px 0;
   text-align: center;
   color: var(--muted);
+  background: transparent;
+  border: none;
+  box-shadow: none;
 }
-.empty .dome { display: inline-block; width: 44px; height: 44px; color: var(--faint);opacity: .75;margin-bottom: 8px; }
+.empty .dome { display: inline-block; width: 44px; height: 44px; color: var(--faint);opacity: .8;margin-bottom: 8px; }
 .empty h2 {
   margin: 0 0 4px;
-  font-family: var(--font-display);
-  font-size: 15px;
-  font-weight: 500;
-  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--host-ink);
   text-wrap: balance;
 }
-.empty p { margin: 0; font-size: 12px; max-width: 30ch; margin-inline: auto; }
+.empty p { margin: 0; font-size: 12px; max-width: 30ch; margin-inline: auto; color: var(--muted); }
 footer {
   margin-top: 24px;
   display: flex;
@@ -304,14 +335,15 @@ footer {
   gap: 8px;
   color: var(--faint);
   font-size: 11px;
+  font-family: var(--font-mono);
 }
 footer img { width: 14px; height: 14px; opacity: .6; }
 :where(button, input, [tabindex]):focus-visible {
-  outline: 2px solid var(--accent);
+  outline: 2px solid var(--amber);
   outline-offset: 2px;
 }
 input:focus-visible { outline: none; }
-::selection { background: var(--accent-soft); color: var(--accent-ink); }
+::selection { background: var(--amber-soft); color: var(--host-ink); }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: .01ms !important;
@@ -324,32 +356,32 @@ input:focus-visible { outline: none; }
 <body>
 <main class="shell">
   <header class="top">
-    <img class="mark" alt="" width="24" height="24" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M7 24V16a9 9 0 0 1 18 0v8' fill='none' stroke='%23e9b872' stroke-width='2.3' stroke-linecap='round'/%3E%3Cpath d='M4.5 27.5h23' stroke='%23e9b872' stroke-opacity='.45' stroke-width='1.5' stroke-linecap='round'/%3E%3Cpath d='M13 23v-4M16 23v-7M19 23v-2.6' stroke='%234ed6a1' stroke-width='1.6'/%3E%3C/svg%3E">
+    <img class="mark" alt="" width="24" height="24" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M7 23V16a9 9 0 0 1 18 0v7' fill='none' stroke='%23e8dcbe' stroke-width='2.4' stroke-linecap='round'/%3E%3Cpath d='M4 27h24' stroke='%23a89a78' stroke-opacity='.5' stroke-width='1.6' stroke-linecap='round'/%3E%3Ccircle cx='16' cy='15' r='2' fill='%23f2a83e'/%3E%3Cpath d='M10 23v-4M14 23v-6M18 23v-4.5' stroke='%235fd894' stroke-width='1.7'/%3E%3C/svg%3E">
     <h1 class="wordmark">tunna</h1>
     <span class="domain" id="domain">checking</span>
   </header>
   <div class="toast err" id="err" role="alert"></div>
   <p class="sub">Public hostnames route to local ports. Wildcard ingress <code>*.<span id="wildcard">domain</span></code> is handled by this proxy.</p>
 
-  <form id="add">
-    <label class="field"><span>Port</span>
+  <form id="add" class="panel">
+    <label class="field"><span>port</span>
       <input id="port" type="number" min="1" max="65535" placeholder="3000" required>
     </label>
-    <label class="field"><span>Hostname, optional</span>
+    <label class="field"><span>hostname, optional</span>
       <input id="host" type="text" placeholder="auto: p3000" spellcheck="false" autocapitalize="off">
     </label>
     <button class="primary" type="submit">Expose</button>
   </form>
 
-  <ul id="list"></ul>
+  <ul id="list" class="panel"></ul>
   <div class="empty panel" id="empty" hidden>
-    <svg class="dome" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M10 48V32a22 22 0 0 1 44 0v16"/><path d="M5 54h54" opacity=".5"/><path d="M22 48v-8M32 48V34M42 48v-5" opacity=".7"/><circle cx="32" cy="21" r="2.2" stroke="none" fill="currentColor"/></svg>
+    <svg class="dome" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M14 46V30a18 18 0 0 1 36 0v16"/><path d="M8 52h48" opacity=".5"/><path d="M20 46v-7M27 46v-11M34 46v-8.5M41 46v-5.5" opacity=".7"/><circle cx="32" cy="22" r="2.2" stroke="none" fill="currentColor"/></svg>
     <h2>No routes tunneled</h2>
     <p>Expose a local port above and it comes live here.</p>
   </div>
 
   <footer>
-    <img alt="" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M7 24V16a9 9 0 0 1 18 0v8' fill='none' stroke='%23748a83' stroke-width='2.3' stroke-linecap='round'/%3E%3C/svg%3E">
+    <img alt="" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M7 23V16a9 9 0 0 1 18 0v7' fill='none' stroke='%23e8dcbe' stroke-width='2.4' stroke-linecap='round'/%3E%3C/svg%3E">
     <span>tunnel owned by cloudflared, routing by tunna</span>
   </footer>
 </main>

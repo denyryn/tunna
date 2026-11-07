@@ -1,10 +1,8 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none" aria-hidden="true">
-  <g stroke-linecap="round">
-    <path d="M6 24.5V15.9a10 10 0 0 1 20 0v8.6" stroke="#e9b872" stroke-width="2.3"/>
-    <path d="M3 28h26" stroke="#e9b872" stroke-opacity=".45" stroke-width="1.5"/>
-    <path d="M12.3 24.3v-4.6" stroke="#4ed6a1" stroke-opacity=".9" stroke-width="1.8"/>
-    <path d="M16 24.3v-8.2" stroke="#4ed6a1" stroke-opacity=".55" stroke-width="1.8"/>
-    <path d="M19.7 24.3v-3" stroke="#4ed6a1" stroke-opacity=".75" stroke-width="1.8"/>
-  </g>
-  <circle cx="16" cy="9.2" r="1.5" fill="#e9b872"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- dome control-panel mark: engraved arch, amber headlamp, phosphor traffic -->
+  <path d="M14 46V30a18 18 0 0 1 36 0v16" fill="none" stroke="#e8dcbe" stroke-width="3.2" stroke-linecap="round"/>
+  <path d="M8 52h48" stroke="#a89a78" stroke-opacity=".55" stroke-width="2" stroke-linecap="round"/>
+  <circle cx="32" cy="22" r="3.4" fill="#f2a83e"/>
+  <path d="M20 46v-7M27 46v-11M34 46v-8.5M41 46v-5.5" stroke="#5fd894" stroke-width="2" stroke-linecap="round" opacity=".85"/>
+  <path d="M14 46h36" stroke="#f2a83e" stroke-opacity=".4" stroke-width="1.4" stroke-linecap="round"/>
 </svg>
