@@ -2,6 +2,16 @@
 
 All notable changes to tunna are documented here (Keep a Changelog, semver).
 
+## 0.3.1 - 2026-11-07
+
+### Fixed
+
+- The web manager layout: the expose form is a single row with equal
+  control heights and the hostname fills the remaining space, empty
+  error toasts no longer render, the header domain is shown once (in the
+  wildcard sentence), and route rows use a toggle plus a trash icon.
+- The tray popup window is smaller (380x460).
+
 ## 0.3.0 - 2026-11-07
 
 ### Changed

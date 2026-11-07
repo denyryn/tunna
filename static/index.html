@@ -150,6 +150,7 @@ main.shell {
   margin-bottom: 12px;
 }
 .toast[hidden] { display: none; }
+.toast:empty { display: none; }
 .panel {
   color: var(--text);
   border: 1px solid var(--engrave);
@@ -160,22 +161,12 @@ main.shell {
 form#add {
   display: flex;
   align-items: center;
-  flex-wrap: wrap;
   gap: 8px;
   padding: 12px;
   margin-bottom: 16px;
 }
-label.field {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  min-width: 0;
-}
-label.field > span {
-  font-size: 11px;
-  font-family: var(--font-mono);
-  color: var(--faint);
-}
+#port { width: 90px; font-variant-numeric: tabular-nums; }
+#host { flex: 1; min-width: 0; }
 input {
   height: 34px;
   padding: 0 8px;
@@ -195,8 +186,6 @@ input:focus {
   border-color: var(--amber);
   box-shadow: 0 0 0 2px var(--amber-soft), inset 0 1px 2px var(--shift);
 }
-#port { width: 96px; font-variant-numeric: tabular-nums; }
-#host { flex: 1; min-width: 180px; }
 button {
   height: 34px;
   padding: 0 12px;
@@ -220,6 +209,16 @@ button.primary {
 button.primary:hover { filter: brightness(1.07); background: var(--amber); }
 button.primary:active { transform: translateY(2px); box-shadow: 0 0 0 var(--shadow); }
 button.ghost { background: transparent; }
+button.icon { display: grid; place-items: center; width: 32px; padding: 0; }
+button.icon svg {
+  width: 14px;
+  height: 14px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
 button.danger { background: transparent; border-color: transparent; color: var(--faint); }
 button.danger:hover { color: var(--danger); background: var(--danger-soft); border-color: var(--danger-line); }
 button:disabled {
@@ -358,18 +357,14 @@ input:focus-visible { outline: none; }
   <header class="top">
     <img class="mark" alt="" width="24" height="24" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M7 23V16a9 9 0 0 1 18 0v7' fill='none' stroke='%23e8dcbe' stroke-width='2.4' stroke-linecap='round'/%3E%3Cpath d='M4 27h24' stroke='%23a89a78' stroke-opacity='.5' stroke-width='1.6' stroke-linecap='round'/%3E%3Ccircle cx='16' cy='15' r='2' fill='%23f2a83e'/%3E%3Cpath d='M10 23v-4M14 23v-6M18 23v-4.5' stroke='%235fd894' stroke-width='1.7'/%3E%3C/svg%3E">
     <h1 class="wordmark">tunna</h1>
-    <span class="domain" id="domain">checking</span>
+    <span class="domain" id="domain" hidden></span>
   </header>
   <div class="toast err" id="err" role="alert"></div>
-  <p class="sub">Public hostnames route to local ports. Wildcard ingress <code>*.<span id="wildcard">domain</span></code> is handled by this proxy.</p>
+  <p class="sub">Wildcard ingress <code>*.<span id="wildcard">domain</span></code> reaches your local ports.</p>
 
   <form id="add" class="panel">
-    <label class="field"><span>port</span>
-      <input id="port" type="number" min="1" max="65535" placeholder="3000" required>
-    </label>
-    <label class="field"><span>hostname, optional</span>
-      <input id="host" type="text" placeholder="auto: p3000" spellcheck="false" autocapitalize="off">
-    </label>
+    <input id="port" type="number" min="1" max="65535" placeholder="port" aria-label="port" required>
+    <input id="host" type="text" placeholder="hostname, optional" aria-label="hostname, optional" spellcheck="false" autocapitalize="off">
     <button class="primary" type="submit">Expose</button>
   </form>
 
@@ -443,12 +438,13 @@ function render(routes) {
     info.append(hostLine);
 
     const del = document.createElement("button");
-    del.className = "danger ghost";
-    del.textContent = "Remove";
+    del.className = "danger ghost icon";
+    del.title = "Remove";
     del.setAttribute("aria-label", "Delete route " + r.host);
+    del.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg>';
     del.onclick = () => mutate("DELETE", `/api/routes/${encodeURIComponent(r.host)}`);
 
-    li.append(toggle, info, del);
+    li.append(info, toggle, del);
     list.append(li);
   }
 }
@@ -459,7 +455,6 @@ async function refresh() {
     baseDomain = data.base_domain;
     $("domain").textContent = baseDomain;
     $("wildcard").textContent = baseDomain;
-    $("host").placeholder = "auto: p3000";
   }
   render(data.routes);
 }
