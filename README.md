@@ -57,21 +57,24 @@ port you will ever expose; tunna's proxy does the per-hostname routing.
 
 ## 2. Install tunna
 
-Download a release, or build it yourself:
+One line, as root (downloads the latest release, checks its checksum, puts
+the binary in `/usr/local/bin`, grabs `cloudflared` if it is missing, writes
+both systemd units, and creates env at `/etc/tunna/tunna.env`):
 
 ```sh
-# from a release
-tar -xzf tunna-x86_64-linux.tar.gz
-install -m755 dist/tunna /usr/local/bin/
+curl -fsSL https://raw.githubusercontent.com/denyryn/tunna/main/install.sh | sudo bash
+```
 
-# or from source
+Then continue at [3. Configure](#3-configure) to add your token.
+
+Prefer doing it yourself, or want the files somewhere else? Override paths
+(`TUNNA_BIN_DIR`, `TUNNA_UNIT_DIR`, `TUNNA_STATE_DIR`, `TUNNA_ENV`) or build:
+
+```sh
 cargo install --git https://github.com/denyryn/tunna
 ```
 
-Install `cloudflared` from
-[Cloudflare's releases](https://github.com/cloudflare/cloudflared/releases)
-(a `.rpm`, `.deb`, or a static binary; Fedora also gets it as an `.rpm`
-directly from the latest release page).
+and follow [5. Run it as a service](#5-run-it-as-a-service).
 
 ## 3. Configure
 

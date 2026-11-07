@@ -2,6 +2,15 @@
 
 All notable changes to tunna are documented here (Keep a Changelog, semver).
 
+## Unreleased
+
+### Added
+
+- One-line install: `install.sh` downloads a release tarball, verifies the
+  embedded checksum, installs the binary and `cloudflared`, generates both
+  systemd units from your paths, and creates the env file without overwriting
+  an existing one.
+
 ## 0.1.0 - 2026-11-07
 
 Initial release.
