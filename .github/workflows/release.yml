@@ -1,0 +1,39 @@
+name: Release
+
+on:
+  push:
+    tags: ["[0-9]+.[0-9]+.[0-9]+"]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - run: cargo build --release
+
+      - name: Package
+        run: |
+          strip target/release/tunna
+          mkdir dist
+          cp target/release/tunna tunna.service tunnel-cloudflared.service dist/
+          sha256sum dist/tunna > dist/tunna.sha256
+          tar -czf tunna-x86_64-linux.tar.gz dist/*
+
+      - name: Extract notes
+        run: |
+          awk -v v="${GITHUB_REF_NAME#v}" \
+            '/^## /{section = index($2, v) == 1} section && $0 !~ /^## /{print}' \
+            CHANGELOG.md > notes.md
+
+      - name: Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" \
+            --verify-tag --title "tunna $GITHUB_REF_NAME" \
+            --notes-file notes.md \
+            tunna-x86_64-linux.tar.gz
