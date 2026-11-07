@@ -2,6 +2,14 @@
 
 All notable changes to tunna are documented here (Keep a Changelog, semver).
 
+## 0.3.5 - 2026-11-07
+
+### Fixed
+
+- Starting the server while another instance already holds the ports
+  (e.g. the systemd service) now prints a friendly explanation and
+  exits instead of panicking with a backtrace.
+
 ## 0.3.4 - 2026-11-07
 
 ### Added

@@ -539,27 +539,48 @@ async fn main() {
         .parse()
         .expect("invalid LISTEN_PORT");
 
+    let manager_listener = bind_listener(manager_addr, "manager").await;
+    let proxy_listener = bind_listener(proxy_addr, "proxy").await;
+
     let manager = {
         let st = st.clone();
         tokio::spawn(async move {
-            let listener = tokio::net::TcpListener::bind(manager_addr)
-                .await
-                .expect("cannot bind manager listener");
             eprintln!("manager listening on {manager_addr}");
-            axum::serve(listener, api_router(st)).await.unwrap();
+            axum::serve(manager_listener, api_router(st)).await.unwrap();
         })
     };
 
-    let listener = tokio::net::TcpListener::bind(proxy_addr)
-        .await
-        .expect("cannot bind proxy listener");
     eprintln!(
         "proxy listening on {proxy_addr} (base domain {})",
         st.base_domain
     );
     let proxy = Router::new().fallback(proxy_request).with_state(st);
-    axum::serve(listener, proxy).await.unwrap();
+    axum::serve(proxy_listener, proxy).await.unwrap();
     manager.abort();
+}
+
+/// bind, or explain instead of panicking when another tunna is already up
+async fn bind_listener(addr: std::net::SocketAddr, what: &str) -> tokio::net::TcpListener {
+    match tokio::net::TcpListener::bind(addr).await {
+        Ok(l) => l,
+        Err(e) if e.kind() == std::io::ErrorKind::AddrInUse => {
+            eprintln!(
+                "error: {what} port {} is already in use — another tunna server is running.",
+                addr.port()
+            );
+            eprintln!("  the running instance serves the same web UI and CLI ops:");
+            eprintln!("    tunna routes          # see live routes");
+            eprintln!(
+                "  to start a second instance, change ports: MANAGER_PORT / LISTEN_PORT"
+            );
+            eprintln!("  to replace the systemd one: sudo systemctl stop tunna");
+            std::process::exit(1);
+        }
+        Err(e) => {
+            eprintln!("error: cannot bind {what} listener on {addr}: {e}");
+            std::process::exit(1);
+        }
+    }
 }
 
 fn report(result: Result<(), String>) -> i32 {
