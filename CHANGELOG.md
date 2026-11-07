@@ -2,6 +2,15 @@
 
 All notable changes to tunna are documented here (Keep a Changelog, semver).
 
+## 0.3.4 - 2026-11-07
+
+### Added
+
+- Tuna line-art logo across the app: tray icon set redrawn in cream
+  (`icon.png`, `32x32.png`, `128x128.png`, `128x128@2x.png`), popup and
+  web favicons, and both page header marks (popup mark is now a traced
+  `brand.svg`). `icon.png` at the repo root is the source art.
+
 ## 0.3.3 - 2026-11-07
 
 ### Fixed
