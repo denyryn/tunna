@@ -69,8 +69,9 @@ cargo install --git https://github.com/denyryn/tunna
 ```
 
 Install `cloudflared` from
-[Cloudflare's releases](https://github.com/cloudflare/cloudflared/releases/download?path=x86_64)
-(`.rpm`, `.deb`, or a static binary, your choice).
+[Cloudflare's releases](https://github.com/cloudflare/cloudflared/releases)
+(a `.rpm`, `.deb`, or a static binary; Fedora also gets it as an `.rpm`
+directly from the latest release page).
 
 ## 3. Configure
 
