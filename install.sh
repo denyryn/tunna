@@ -160,6 +160,8 @@ if [ "$NEEDS_TOKEN" = 1 ]; then
   echo "Open the web UI at http://127.0.0.1:8080 after that."
 else
   echo "tunna $TUNNA_VERSION installed and starting."
-  systemctl enable --now tunna.service tunnel-cloudflared.service
+  systemctl enable tunna.service tunnel-cloudflared.service
+  systemctl daemon-reload
+  systemctl restart tunna.service tunnel-cloudflared.service
   echo "Web UI: http://127.0.0.1:8080  ·  status: systemctl status tunnel-cloudflared.service"
 fi
