@@ -375,9 +375,12 @@ no command             start the proxy + manager server (reads env)
 
 routes                 list all routes
 expose <port> [host]   expose a local port (host defaults to p<port>.<base_domain>)
-remove <host>          delete a route
-on <host>              enable an existing route
-off <host>             disable an existing route
+remove <host>-or-port  delete a route
+on <target>            enable an existing route
+off <target>           disable an existing route
+
+target: [host] | [-p | --port] <port> — a bare or -p port finds the route
+using that port (when unique), else p<port>.<base_domain>.
 
 Commands talk to the running manager over HTTP (env TUNNA_MANAGER,
 default http://127.0.0.1:8080). Short hosts for on/off/remove resolve
@@ -386,6 +389,18 @@ against the configured base domain.
 
 fn resolve_host(arg: &str, base: &str, routes: &[Route]) -> Result<String, String> {
     let arg = arg.trim().trim_end_matches('.').to_lowercase();
+    // a bare or -p port: an unambiguous port match wins, else fall through
+    // to the p<port>.<base_domain> pattern
+    let arg = if !arg.is_empty() && arg.chars().all(|c| c.is_ascii_digit()) {
+        let port = arg.parse::<u64>().unwrap_or(0);
+        let mut on_port = routes.iter().filter(|r| r.port == port);
+        if let (Some(only), None) = (on_port.next(), on_port.next()) {
+            return Ok(only.host.clone());
+        }
+        format!("p{port}")
+    } else {
+        arg
+    };
     if routes.iter().any(|r| r.host == arg) {
         return Ok(arg);
     }
@@ -394,6 +409,28 @@ fn resolve_host(arg: &str, base: &str, routes: &[Route]) -> Result<String, Strin
         return Ok(full);
     }
     Err(format!("route not found: {arg}"))
+}
+
+/// target after the command: "-p 3000", "-p3000", "--port 3000",
+/// "--port=3000" or a plain host/port
+fn target_of(rest: &[String], cmd: &str) -> Result<String, String> {
+    let usage = || format!("usage: tunna {cmd} [-p <port>] [host]");
+    let mut target: Option<String> = None;
+    let mut it = rest.iter();
+    while let Some(flag) = it.next().map(String::as_str) {
+        match flag {
+            "-p" | "--port" => target = Some(it.next().ok_or_else(usage)?.to_string()),
+            s if let Some(v) = s.strip_prefix("--port=") => target = Some(v.to_string()),
+            s if let Some(v) = s.strip_prefix("-p") => target = Some(v.to_string()),
+            _ => {
+                if target.is_some() {
+                    return Err(usage());
+                }
+                target = Some(flag.to_string());
+            }
+        }
+    }
+    target.ok_or_else(usage)
 }
 
 async fn manager(method: &str, path: &str, body: Option<Value>) -> Result<(u16, Value), String> {
@@ -537,40 +574,13 @@ fn report(result: Result<(), String>) -> i32 {
 
 async fn cli(args: Vec<String>) -> i32 {
     let (cmd, rest) = args.split_first().unwrap();
-    match (cmd.as_str(), rest.first().map(String::as_str)) {
-        ("routes" | "list", _) => report(cmd_routes().await),
-        ("expose", _) => report(cmd_expose(rest).await),
-        ("remove", Some(host)) => {
-            let act = host_action(host, |host| async move {
-                let (status, v) =
-                    manager("DELETE", &format!("/api/routes/{host}"), None).await?;
-                if status == 200 {
-                    println!("removed {}", v["deleted"].as_str().unwrap_or(&host));
-                    Ok(())
-                } else {
-                    Err(v["error"].as_str().unwrap_or("request failed").to_owned())
-                }
-            })
-            .await;
-            report(act)
-        }
-        ("on", Some(host)) => report(
-            host_action(host, |host| async move {
-                set_enabled(&host, true).await
-            })
-            .await,
-        ),
-        ("off", Some(host)) => report(
-            host_action(host, |host| async move {
-                set_enabled(&host, false).await
-            })
-            .await,
-        ),
-        ("on" | "off" | "remove", None) => {
-            eprintln!("usage: tunna {cmd} <host>\n\n{CLI_USAGE}");
-            2
-        }
-        ("help" | "-h" | "--help", _) => {
+    match cmd.as_str() {
+        "routes" | "list" => report(cmd_routes().await),
+        "expose" => report(cmd_expose(rest).await),
+        "remove" => report(remove_target(rest, "remove").await),
+        "on" => report(toggle_target(rest, "on", true).await),
+        "off" => report(toggle_target(rest, "off", false).await),
+        "help" | "-h" | "--help" => {
             print!("{CLI_USAGE}");
             0
         }
@@ -579,6 +589,26 @@ async fn cli(args: Vec<String>) -> i32 {
             2
         }
     }
+}
+
+async fn toggle_target(rest: &[String], cmd: &str, enabled: bool) -> Result<(), String> {
+    let target = target_of(rest, cmd)?;
+    host_action(&target, |host| async move { set_enabled(&host, enabled).await }).await
+}
+
+async fn remove_target(rest: &[String], cmd: &str) -> Result<(), String> {
+    let target = target_of(rest, cmd)?;
+    host_action(&target, |host| async move {
+        let path = format!("/api/routes/{host}");
+        let (status, v) = manager("DELETE", &path, None).await?;
+        if status == 200 {
+            println!("removed {}", v["deleted"].as_str().unwrap_or(&host));
+            Ok(())
+        } else {
+            Err(v["error"].as_str().unwrap_or("request failed").to_owned())
+        }
+    })
+    .await
 }
 
 async fn set_enabled(host: &str, enabled: bool) -> Result<(), String> {
@@ -701,5 +731,40 @@ mod tests {
             .unwrap_err()
             .starts_with("route not found"));
         assert!(resolve_host("p3000.other.com", "example.com", &routes).is_err());
+    }
+
+    #[test]
+    fn port_target_resolves() {
+        let routes = vec![
+            route("app.example.com", 3000, true),
+            route("p8000.example.com", 8000, true),
+        ];
+        // unique port anywhere in the table wins over the p<port> pattern
+        assert_eq!(
+            resolve_host("3000", "example.com", &routes),
+            Ok("app.example.com".to_owned())
+        );
+        assert_eq!(
+            resolve_host("8000", "example.com", &routes),
+            Ok("p8000.example.com".to_owned())
+        );
+        // ambiguous port: falls back to the p<port> pattern, which is missing
+        let dup = vec![
+            route("a.example.com", 3000, true),
+            route("b.example.com", 3000, true),
+        ];
+        assert!(resolve_host("3000", "example.com", &dup).is_err());
+    }
+
+    #[test]
+    fn target_flag_parsing() {
+        let arg = |v: &[&str]| -> Vec<String> { v.iter().map(|s| s.to_string()).collect() };
+        assert_eq!(target_of(&arg(&["-p", "3000"]), "on"), Ok("3000".into()));
+        assert_eq!(target_of(&arg(&["-p3000"]), "on"), Ok("3000".into()));
+        assert_eq!(target_of(&arg(&["--port", "3000"]), "off"), Ok("3000".into()));
+        assert_eq!(target_of(&arg(&["--port=3000"]), "off"), Ok("3000".into()));
+        assert_eq!(target_of(&arg(&["p3000"]), "on"), Ok("p3000".into()));
+        assert_eq!(target_of(&arg(&["-p", "3000", "host"]), "on").unwrap_err(), "usage: tunna on [-p <port>] [host]");
+        assert_eq!(target_of(&arg(&[]), "on").unwrap_err(), "usage: tunna on [-p <port>] [host]");
     }
 }

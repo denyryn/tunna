@@ -181,6 +181,9 @@ tunna remove p3000        # delete
 
 Commands find the manager at `TUNNA_MANAGER` (default `http://127.0.0.1:8080`).
 
+`on`, `off` and `remove` also take `--port`: `tunna off -p 3000` finds the
+route using port 3000 (when unique), else `p3000.<base_domain>`.
+
 ## Where routes live
 
 `$DATA_DIR/routes.json`. Every change is written here before tunna responds,

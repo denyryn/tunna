@@ -2,6 +2,14 @@
 
 All notable changes to tunna are documented here (Keep a Changelog, semver).
 
+## 0.3.3 - 2026-11-07
+
+### Fixed
+
+- CLI: `on`, `off` and `remove` accept `--port`/`-p <port>`; a bare or
+  flagged port finds the route using that port (when unique), else
+  `p<port>.<base_domain>`.
+
 ## 0.3.2 - 2026-11-07
 
 ### Added
