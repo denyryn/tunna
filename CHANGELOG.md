@@ -2,6 +2,24 @@
 
 All notable changes to tunna are documented here (Keep a Changelog, semver).
 
+## Unreleased
+
+### Fixed
+
+- The route enable/disable switch threw `cb is not defined` instead of
+  patching the route; it now reads the checkbox state from the event.
+
+### Removed
+
+- The `tunna-tray` desktop companion: its crate, release artifact, installer
+  step, and docs are gone. The web manager is the only UI.
+
+### Changed
+
+- README step 1 now tells you to add a second public hostname for the manager
+  UI (`http://localhost:8080`, or your `MANAGER_PORT`), next to the wildcard
+  hostname that points at the proxy.
+
 ## 0.3.5 - 2026-11-07
 
 ### Fixed

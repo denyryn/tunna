@@ -11,7 +11,7 @@
 <style>
 /* Hallmark · 2026-11-07 · genre: modern-minimal (app screen)
  * theme: analog control panel (by request) · scope: app
- * aligned 1:1 to tunna-tray popup styles.css (same tokens, faces, components)
+ * aligned 1:1 to the tunna popup styles.css (same tokens, faces, components)
  * built: the project · redesign: align
  * waive 39b: the 19px "input" is the a11y checkbox overlay inside .switch; visible control is the track
  * waive 64: .field span / .port-chip mono is the material (panel engraving + port numerics)
@@ -420,8 +420,8 @@ function render(routes) {
     const li = document.createElement("li");
     li.className = "route" + (r.enabled ? "" : " off");
 
-    const toggle = switchEl(r.enabled, () => {
-      mutate("PATCH", `/api/routes/${encodeURIComponent(r.host)}`, { enabled: cb.checked });
+    const toggle = switchEl(r.enabled, (e) => {
+      mutate("PATCH", `/api/routes/${encodeURIComponent(r.host)}`, { enabled: e.target.checked });
     });
 
     const info = document.createElement("div");
